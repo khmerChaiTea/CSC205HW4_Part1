@@ -13,24 +13,40 @@ namespace CSC205HW4
 			// Prompt the user to enter a string to be encoded
 			Console.Write("Enter a string to encode: ");
 
-			// Read the input string from the user; O(n)
+			// Read the input string from the user
 			string userInput = Console.ReadLine();
 
-			// Encode the input string using the Encode method
-			string encodedString = Encode(userInput);
+			// Prompt the user to enter the shift value for encoding
+			Console.Write("Enter shift value: ");
+			// Try parsing the shift value entered by the user
+			if (!int.TryParse(Console.ReadLine(), out int shift))
+			{
+				// Notify the user if the shift value is invalid
+				Console.WriteLine("Invalid shift value. Please enter a number.");
+				return; // Exit the program if the input is not a valid number
+			}
 
-			// Display the original and encoded strings to the user
+			// Encode the input string using the provided shift value
+			string encodedString = Encode(userInput, shift);
+
+			// Display the original and encoded strings
 			Console.WriteLine($"Original: {userInput}");
 			Console.WriteLine($"Encoded: {encodedString}");
+
+			// Optional: Decode the encoded string to verify correctness
+			string decodedString = Encode(encodedString, -shift);
+			Console.WriteLine($"Decoded: {decodedString}");
 		}
 
-		// Method to encode a string using Caesar cipher with a shift of 13
-		static string Encode(string input)
+		// Method to encode a string using Caesar cipher with a given shift
+		static string Encode(string input, int shift)
 		{
 			// Create a character array to hold the encoded characters
 			char[] encodedChar = new char[input.Length];
+			// Normalize the shift to be within 0-25 to handle large shifts
+			shift = shift % 26;
 
-			// Loop through each character in the input string; O(n)
+			// Loop through each character in the input string
 			for (int i = 0; i < encodedChar.Length; i++)
 			{
 				// Get the current character from the input string
@@ -42,13 +58,13 @@ namespace CSC205HW4
 					// Check if the character is an uppercase letter
 					if (char.IsUpper(currentChar))
 					{
-						// Encode the uppercase letter by shifting it 13 places in the alphabet
-						encodedChar[i] = (char)(((currentChar - 'A' + 13) % 26) + 'A');
+						// Encode the uppercase letter by applying the shift
+						encodedChar[i] = (char)(((currentChar - 'A' + shift + 26) % 26) + 'A');
 					}
 					else
 					{
-						// Encode the lowercase letter by shifting it 13 places in the alphabet
-						encodedChar[i] = (char)(((currentChar - 'a' + 13) % 26) + 'a');
+						// Encode the lowercase letter by applying the shift
+						encodedChar[i] = (char)(((currentChar - 'a' + shift + 26) % 26) + 'a');
 					}
 				}
 				else
